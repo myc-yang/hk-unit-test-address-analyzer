@@ -48,7 +48,6 @@ HK_AppData_t HK_AppData;
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void HK_AppMain(void)
 {
-    CFE_Status_t     Status = CFE_SUCCESS;
     CFE_SB_Buffer_t *BufPtr = NULL;
 
     /*
@@ -57,7 +56,7 @@ void HK_AppMain(void)
     CFE_ES_PerfLogEntry(HK_APPMAIN_PERF_ID);
 
     /* Perform Application Initialization */
-    Status = HK_AppInit();
+    CFE_Status_t Status = HK_AppInit();
     if (Status != CFE_SUCCESS)
     {
         HK_AppData.RunStatus = CFE_ES_RunStatus_APP_ERROR;
@@ -131,8 +130,6 @@ void HK_AppMain(void)
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 CFE_Status_t HK_AppInit(void)
 {
-    CFE_Status_t Status = CFE_SUCCESS;
-
     HK_AppData.RunStatus = CFE_ES_RunStatus_APP_RUN;
 
     /* Initialize housekeeping packet  */
@@ -141,7 +138,7 @@ CFE_Status_t HK_AppInit(void)
                  sizeof(HK_HkPacket_t));
 
     /* Register for event services...        */
-    Status = CFE_EVS_Register(NULL, 0, CFE_EVS_EventFilter_BINARY);
+    CFE_Status_t Status = CFE_EVS_Register(NULL, 0, CFE_EVS_EventFilter_BINARY);
     if (Status != CFE_SUCCESS)
     {
         CFE_ES_WriteToSysLog("HK: error registering for event services: 0x%08X\n", (unsigned int)Status);
@@ -240,14 +237,12 @@ CFE_Status_t HK_AppInit(void)
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 CFE_Status_t HK_TableInit(void)
 {
-    CFE_Status_t Status = CFE_SUCCESS;
-
     /* Register The HK Copy Table */
-    Status = CFE_TBL_Register(&HK_AppData.CopyTableHandle,
-                              HK_COPY_TABLE_NAME,
-                              (sizeof(HK_CopyTableEntry_t) * HK_COPY_TABLE_ENTRIES),
-                              CFE_TBL_OPT_DBL_BUFFER | CFE_TBL_OPT_LOAD_DUMP,
-                              HK_ValidateHkCopyTable);
+    CFE_Status_t Status = CFE_TBL_Register(&HK_AppData.CopyTableHandle,
+                                           HK_COPY_TABLE_NAME,
+                                           (sizeof(HK_CopyTableEntry_t) * HK_COPY_TABLE_ENTRIES),
+                                           CFE_TBL_OPT_DBL_BUFFER | CFE_TBL_OPT_LOAD_DUMP,
+                                           HK_ValidateHkCopyTable);
 
     if (Status != CFE_SUCCESS)
     {
